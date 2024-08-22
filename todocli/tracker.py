@@ -19,20 +19,20 @@ actions_library = ["add", "delete", "update", "mk-done", "mk-doing"]
 class Task_tracker:
     def __init__(self, file="task/tasks.json"):
         self.file = file
+        self.curr_id = 0
         print(self.file)
         print(os.path.exists(file))
         
     def addTask(self, task_details):
+        self.curr_id +=1
         new_task = {
-            "id":0,
+            "id":"{id}".format(id=self.curr_id),
             "details":task_details,
             "date": datetime.today().strftime('%Y-%m-%d'),
             "status":"not started",
         }
-        print (new_task)
         with open(self.file, "r") as f:
             saved_tasks = json.load(f)
-            new_task["id"]= "{id}".format(id = len(saved_tasks)+1)
             f.close()
         saved_tasks[new_task["id"]] = new_task
         file = open(self.file,"w")
@@ -71,4 +71,6 @@ class Task_tracker:
     def list(self):
         f = open(self.file,"r")
         tasks= json.load(f)
-        print(tasks)
+        for t in tasks:
+            # print(t.values,'\n')
+            print("{id}. {name}".format(id=tasks[t]["id"], name=tasks[t]["details"]))
